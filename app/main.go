@@ -4,24 +4,24 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 
-	crypto "github.com/coel/x/crypto"
+	"github.com/coel/x/crypto/utils"
 )
 
 func main() {
-	secretKey := crypto.GetAESSecretKey()
+	secretKey := utils.GetAESSecretKey()
 	data := make([]byte, 64)
 	rand.Read(data)
-	encryptedData, _ := crypto.EncryptWithAESSecretKey(secretKey, data)
-	decryptedData, _ := crypto.DecryptWithAESSecretKey(secretKey, encryptedData)
+	encryptedData, _ := utils.EncryptWithAESSecretKey(secretKey, data)
+	decryptedData, _ := utils.DecryptWithAESSecretKey(secretKey, encryptedData)
 	println(hex.EncodeToString(data))
 	println(hex.EncodeToString(encryptedData))
 	println(hex.EncodeToString(decryptedData))
 
-	privateKey := crypto.GetECPrivateKey()
+	privateKey := utils.GetECPrivateKey()
 	publicKey := privateKey.GetECPublicKey()
 
-	encryptedData, _ = crypto.EncryptWithECPublicKey(publicKey, data)
-	decryptedData, _ = crypto.DecryptWithECPrivateKey(privateKey, encryptedData)
+	encryptedData, _ = utils.EncryptWithECPublicKey(publicKey, data)
+	decryptedData, _ = utils.DecryptWithECPrivateKey(privateKey, encryptedData)
 	println(hex.EncodeToString(encryptedData))
 	println(hex.EncodeToString(decryptedData))
 }

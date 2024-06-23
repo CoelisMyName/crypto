@@ -73,8 +73,8 @@ func GetAESSecretKey() AESSecretKey {
 	return key
 }
 
-func EncryptWithAESSecretKey(secretKeys AESSecretKey, data []byte) ([]byte, error) {
-	block, err := aes.NewCipher(secretKeys)
+func EncryptWithAESSecretKey(secretKey AESSecretKey, data []byte) ([]byte, error) {
+	block, err := aes.NewCipher(secretKey)
 	if err != nil {
 		return nil, err
 	}
@@ -89,8 +89,8 @@ func EncryptWithAESSecretKey(secretKeys AESSecretKey, data []byte) ([]byte, erro
 	return encryptedData, nil
 }
 
-func DecryptWithAESSecretKey(secretKeys AESSecretKey, encryptedData []byte) ([]byte, error) {
-	block, err := aes.NewCipher(secretKeys)
+func DecryptWithAESSecretKey(secretKey AESSecretKey, encryptedData []byte) ([]byte, error) {
+	block, err := aes.NewCipher(secretKey)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,10 @@ func DecryptWithECPrivateKey(privateKey ECPrivateKey, encryptedData []byte) ([]b
 	if err != nil {
 		return nil, err
 	}
-	shared, _ := privateKey.ECDH(encryptPublicKey)
+	shared, err := privateKey.ECDH(encryptPublicKey)
+	if err != nil {
+		return nil, err
+	}
 	digest := sha256.Sum256(shared)
 	var secretKey AESSecretKey = digest[:]
 	decryptedData, err := DecryptWithAESSecretKey(secretKey, encryptedData[4+publicKeySize:])
